@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_thumbsj" default="compile.module.thumbsj">
+  <dirname property="module.thumbsj.basedir" file="${ant.file.module_thumbsj}"/>
+  
+  <property name="module.jdk.home.thumbsj" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.thumbsj" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.thumbsj" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.thumbsj" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="thumbsj.output.dir" value="${module.thumbsj.basedir}/out/production/ThumbSJ"/>
+  <property name="thumbsj.testoutput.dir" value="${module.thumbsj.basedir}/out/test/ThumbSJ"/>
+  
+  <path id="thumbsj.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="thumbsj.module.production.classpath">
+    <path refid="${module.jdk.classpath.thumbsj}"/>
+  </path>
+  
+  <path id="thumbsj.runtime.production.module.classpath">
+    <pathelement location="${thumbsj.output.dir}"/>
+  </path>
+  
+  <path id="thumbsj.module.classpath">
+    <path refid="${module.jdk.classpath.thumbsj}"/>
+    <pathelement location="${thumbsj.output.dir}"/>
+  </path>
+  
+  <path id="thumbsj.runtime.module.classpath">
+    <pathelement location="${thumbsj.testoutput.dir}"/>
+    <pathelement location="${thumbsj.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.thumbsj">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.thumbsj">
+    <patternset refid="excluded.from.module.thumbsj"/>
+  </patternset>
+  
+  <path id="thumbsj.module.sourcepath">
+    <dirset dir="${module.thumbsj.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.thumbsj" depends="compile.module.thumbsj.production,compile.module.thumbsj.tests" description="Compile module ThumbSJ"/>
+  
+  <target name="compile.module.thumbsj.production" depends="register.custom.compilers" description="Compile module ThumbSJ; production classes">
+    <mkdir dir="${thumbsj.output.dir}"/>
+    <javac2 destdir="${thumbsj.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.thumbsj}/javac">
+      <compilerarg line="${compiler.args.thumbsj}"/>
+      <bootclasspath refid="thumbsj.module.bootclasspath"/>
+      <classpath refid="thumbsj.module.production.classpath"/>
+      <src refid="thumbsj.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.thumbsj"/>
+    </javac2>
+    
+    <copy todir="${thumbsj.output.dir}">
+      <fileset dir="${module.thumbsj.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.thumbsj.tests" depends="register.custom.compilers,compile.module.thumbsj.production" description="compile module ThumbSJ; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.thumbsj" description="cleanup module">
+    <delete dir="${thumbsj.output.dir}"/>
+    <delete dir="${thumbsj.testoutput.dir}"/>
+  </target>
+</project>
