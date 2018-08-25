@@ -11,10 +11,10 @@ import static kr.pe.ecmaxp.thumbsj.helper.RegisterIndex.*;
 public class CPU
 {
     @SuppressWarnings("WeakerAccess")
-    public Registers Regs = new Registers();
+    public Registers regs = new Registers();
 
     @SuppressWarnings("WeakerAccess")
-    public Memory Memory = new Memory();
+    public Memory memory = new Memory();
 
     @SuppressWarnings("WeakerAccess")
     public void Interrupt(byte soffset)
@@ -24,10 +24,10 @@ public class CPU
     }
 
     // ReSharper disable once UnusedMember.Global
-    public void Run(int count) throws InvalidMemoryException, UnknownInstructionException, InvalidAddressArmException, UnsupportedInstructionException
+    public void run(int count) throws InvalidMemoryException, UnknownInstructionException, InvalidAddressArmException, UnsupportedInstructionException
     {
-        Memory memory = Memory;
-        int[] REGS = Regs.load();
+        Memory memory = this.memory;
+        int[] REGS = regs.load();
 
         boolean q = (REGS[CPSR] & FQ) != 0;
         boolean v = (REGS[CPSR] & FV) != 0;
@@ -976,7 +976,7 @@ public class CPU
                     (z ? FZ : 0) |
                     (n ? FN : 0);
 
-            Regs.store(REGS);
+            regs.store(REGS);
         }
     }
 }
